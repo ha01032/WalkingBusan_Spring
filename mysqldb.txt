@@ -1,0 +1,67 @@
+create database walking_db;
+use walking_db;
+
+drop table userinmeeting;
+drop table meeting;
+drop table board;
+drop table user;
+
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(45) NOT NULL,
+  `password` longtext NOT NULL,
+  `nickname` varchar(45) NOT NULL,
+  `profile_id` varchar(100) DEFAULT 'profile',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  UNIQUE KEY `nickname_UNIQUE` (`nickname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `meeting` (
+  `meeting_id` int NOT NULL AUTO_INCREMENT,
+  `meeting_title` varchar(200) NOT NULL,
+  `meeting_content` varchar(400) DEFAULT NULL,
+  `start_date` varchar(45) DEFAULT '0',
+  `end_date` varchar(45) DEFAULT '0',
+  `email` varchar(45) NOT NULL,
+  `meeting_place_name` varchar(200) NOT NULL,
+  `meeting_place_spot` varchar(200) NOT NULL,
+  `meeting_place_imgurl` varchar(200) NOT NULL,
+  `reg_date` datetime NOT NULL,
+  PRIMARY KEY (`meeting_id`),
+  UNIQUE KEY `meeting_title_UNIQUE` (`meeting_title`),
+  KEY `FK_User_TO_Meeting_1` (`email`),
+  CONSTRAINT `FK_User_TO_Meeting_1` FOREIGN KEY (`email`) REFERENCES `user` (`email`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `userinmeeting` (
+  `userinmeeting_id` int NOT NULL AUTO_INCREMENT,
+  `meeting_id` int NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `reg_date` datetime NOT NULL,
+  `userinmeeting_val` varchar(100) NOT NULL,
+  PRIMARY KEY (`userinmeeting_id`),
+  UNIQUE KEY `userinmeeting_val_UNIQUE` (`userinmeeting_val`),
+  KEY `FK_User_TO_Userinmeeting_1` (`email`),
+  KEY `FK_Meeting_TO_Userinmeeting_1` (`meeting_id`),
+  CONSTRAINT `FK_Meeting_TO_Userinmeeting_1` FOREIGN KEY (`meeting_id`) REFERENCES `meeting` (`meeting_id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_User_TO_Userinmeeting_1` FOREIGN KEY (`email`) REFERENCES `user` (`email`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+
+CREATE TABLE `board` (
+  `board_id` int NOT NULL AUTO_INCREMENT,
+  `board_title` varchar(200) NOT NULL,
+  `board_content` varchar(400) DEFAULT NULL,
+  `email` varchar(45) NOT NULL,
+  `reg_date` datetime NOT NULL,
+  
+  PRIMARY KEY (`board_id`),
+  KEY `FK_User_TO_Board_1` (`email`),
+  CONSTRAINT `FK_User_TO_Board_1` FOREIGN KEY (`email`) REFERENCES `user` (`email`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
